@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_common_product_sections",
+  "info": {
+    "displayName": "productSection",
+    "icon": "information"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

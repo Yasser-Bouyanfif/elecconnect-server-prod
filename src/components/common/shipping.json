@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_common_shippings",
+  "info": {
+    "displayName": "shipping",
+    "icon": "car"
+  },
+  "options": {},
+  "attributes": {
+    "carrier": {
+      "type": "string",
+      "default": "Colissimo Standard (2 à 3 jours ouvrés)"
+    },
+    "price": {
+      "type": "decimal"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "orderNumber": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "string"
+    },
+    "userEmail": {
+      "type": "string"
+    },
+    "shippingAddress": {
+      "type": "component",
+      "component": "common.address",
+      "repeatable": false
+    },
+    "billingAddress": {
+      "type": "component",
+      "component": "common.address",
+      "repeatable": false
+    },
+    "shipping": {
+      "type": "component",
+      "component": "common.shipping",
+      "repeatable": false
+    },
+    "subtotal": {
+      "type": "decimal"
+    },
+    "total": {
+      "type": "decimal"
+    },
+    "orderStatus": {
+      "type": "enumeration",
+      "enum": [
+        "paid",
+        "processing",
+        "shipped",
+        "delivered",
+        "canceled",
+        "refunded"
+      ]
+    },
+    "order_lines": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order-line.order-line",
+      "mappedBy": "order"
+    },
+    "stripeSessionId": {
+      "type": "uid"
+    }
+  }
+}
