@@ -1,32 +1,34 @@
 # syntax=docker/dockerfile:1
 
-# Base Debian (évite les galères de sharp sur Alpine)
 FROM node:20-slim AS base
-ENV NODE_ENV=production
 WORKDIR /app
-
-# Dépendances système utiles (node-gyp + sharp)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ libc6 libvips \
- && rm -rf /var/lib/apt/lists/*
+  python3 make g++ libc6 libvips && rm -rf /var/lib/apt/lists/*
 
-# ----- Dépendances npm
+# --- Install deps (avec devDependencies) ---
 FROM base AS deps
+ENV NODE_ENV=development
 COPY package*.json ./
 RUN npm ci
 
-# ----- Build Strapi
+# --- Build Strapi (dev env pour avoir TS, etc.) ---
 FROM deps AS build
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 COPY . .
 RUN npm run build
 
-# ----- Runner final
+# --- Installer uniquement les deps de prod ---
+FROM base AS prod-deps
+ENV NODE_ENV=production
+COPY package*.json ./
+RUN npm ci --omit=dev
+
+# --- Runner final (prod) ---
 FROM base AS runner
-# on copie uniquement ce qu'il faut pour exécuter
-COPY --from=deps /app/node_modules ./node_modules
+ENV NODE_ENV=production
+WORKDIR /app
+COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app ./
-# dossier uploads (persistance via volume côté Coolify)
 RUN mkdir -p /app/public/uploads
 EXPOSE 1337
-CMD ["npm", "run", "start"]
+CMD ["npm","run","start"]
